@@ -6,25 +6,13 @@ class AreasController < ApplicationController
   end
 
   def search
+    @area = Area.new
     if params[:zipcode]
-      # hash形式でパラメタ文字列を指定し、URL形式にエンコード
-      # params = URI.encode_www_form({zipcode: '7830060'})
       # URIを解析し、hostやportをバラバラに取得できるようにする
-      # uri = URI.parse("http://zipcloud.ibsnet.co.jp/api/search?#{params}")
       uri = URI.parse("http://zipcloud.ibsnet.co.jp/api/search?zipcode=#{params[:zipcode]}")
-      # リクエストパラメタを、インスタンス変数に格納
-      @query = uri.query
 
       # 新しくHTTPセッションを開始し、結果をresponseへ格納
-      response = Net::HTTP.start(uri.host, uri.port) do |http|
-        # 接続時に待つ最大秒数を設定
-        http.open_timeout = 5
-        # 読み込み一回でブロックして良い最大秒数を設定
-        http.read_timeout = 10
-        # ここでWebAPIを叩いている
-        # Net::HTTPResponseのインスタンスが返ってくる
-        http.get(uri.request_uri)
-      end
+      response = Net::HTTP.get_response(uri)
       # 例外処理の開始
       begin
         # responseの値に応じて処理を分ける
@@ -41,35 +29,39 @@ class AreasController < ApplicationController
           @kana1 = @result["results"][0]["kana1"]
           @kana2 = @result["results"][0]["kana2"]
           @kana3 = @result["results"][0]["kana3"]
-          flash[:alert] = @result["message"]
         # 別のURLに飛ばされた場合
         when Net::HTTPRedirection
           @message = "Redirection: code=#{response.code} message=#{response.message}"
-          flash[:alert] = @result["message"]
         # その他エラー
         else
           @message = "HTTP ERROR: code=#{response.code} message=#{response.message}"
-          flash[:alert] = @result["message"]
         end
       # エラー時処理
-      rescue IOError => e
-        @message = e
-        flash[:alert] = @result["message"]
-      rescue TimeoutError => e
-        @message = e
-        flash[:alert] = @result["message"]
-      rescue JSON::ParserError => e
-        @message = e
-        flash[:alert] = @result["message"]
-      rescue => e
-        @message = e
-        flash[:alert] = @result["message"]
+      rescue IOError
+        flash.now[:alert] = @result["message"]
+      rescue TimeoutError
+        flash.now[:alert] = @result["message"]
+      rescue JSON::ParserError
+        flash.now[:alert] = @result["message"]
+      rescue
+        flash.now[:alert] = @result["message"]
       end
-
     end
-    
   end
 
   def create
+    @area = Area.new(area_params)
+    if @area.save
+      flash[:notice] = '地域を登録しました。'
+      redirect_to root_path
+    else
+      flash[:alert] = "Validation failed: #{@area.errors.full_messages.join}"
+      redirect_to "/areas/search?zipcode=#{params[:area][:zipcode]}"
+    end
   end
+
+  private
+    def area_params
+      params.require(:area).permit!
+    end
 end

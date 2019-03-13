@@ -10,6 +10,14 @@
   </head>
 
   <body>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+      <%= link_to 'Areas', areas_path, class: 'navbar-brand' %>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <%= link_to 'AreaSearch', '/areas/search', class: "nav-link" %>
+            </li>
+        </ul>
+    </nav>
     <% if flash.notice %>
       <div class="col-md-12">
         <div class="alert alert-success" role="alert">
