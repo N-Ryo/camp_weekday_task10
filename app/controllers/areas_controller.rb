@@ -3,6 +3,7 @@ class AreasController < ApplicationController
   require 'uri'
   require 'json'
   def index
+    @areas = Area.all
   end
 
   def search
@@ -23,6 +24,7 @@ class AreasController < ApplicationController
           @result = JSON.parse(response.body)
           # 表示用の変数に結果を格納
           @zipcode = @result["results"][0]["zipcode"]
+          @prefcode = @result["results"][0]["prefcode"]
           @address1 = @result["results"][0]["address1"]
           @address2 = @result["results"][0]["address2"]
           @address3 = @result["results"][0]["address3"]
