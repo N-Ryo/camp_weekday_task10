@@ -2,7 +2,7 @@
   <% if @result != nil && @result["status"] == 200 %>
     <div class = "form-group">
       <h1 class = "text-center">エリア登録</h1>
-      <%= form_with url: '/areas/search', model: @area, local: true do |form| %>
+      <%= form_with url: '/areas', model: @area, local: true do |form| %>
         <%= form.label :zipcode, 'Zipcode' %>
         <%= form.text_field :zipcode, value: @zipcode, readonly: true, class: 'form-control mb-3' %>
         <%= form.label :prefcode, 'Prefcode' %>
@@ -27,10 +27,10 @@
   <% else %>
     <div class = "form-group">
       <h1 class = "text-center">エリア検索</h1>
-      <%= form_with method: :get, local: true do |form| %>
+      <%= form_with url: '/areas/search', method: :post, local: true, skip_enforcing_utf8: true do |form| %>
         <%= form.label '郵便番号で検索' %>
         <%= form.text_field :zipcode, class: 'form-control' %>
-        <%= form.submit '検索', class: "btn btn-primary form-control mt-2"%>
+        <%= form.submit '検索', name: nil, class: "btn btn-primary form-control mt-2"%>
       <% end %>
     </div>
   <% end %>

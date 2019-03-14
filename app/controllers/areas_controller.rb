@@ -8,10 +8,11 @@ class AreasController < ApplicationController
 
   def search
     @area = Area.new
-    if params[:zipcode]
+    @zipcode = session[:zipcode] || params[:zipcode]
+    session[:zipcode] = nil
+    if @zipcode
       # URIを解析し、hostやportをバラバラに取得できるようにする
-      uri = URI.parse("http://zipcloud.ibsnet.co.jp/api/search?zipcode=#{params[:zipcode]}")
-
+      uri = URI.parse("http://zipcloud.ibsnet.co.jp/api/search?zipcode=#{@zipcode}")
       # 新しくHTTPセッションを開始し、結果をresponseへ格納
       response = Net::HTTP.get_response(uri)
       # 例外処理の開始
@@ -19,7 +20,7 @@ class AreasController < ApplicationController
         # responseの値に応じて処理を分ける
         case response
         # 成功した場合
-        when Net::HTTPSuccess
+        when Net::HTTPOK
           # responseのbody要素をJSON形式で解釈し、hashに変換
           @result = JSON.parse(response.body)
           # 表示用の変数に結果を格納
@@ -48,6 +49,7 @@ class AreasController < ApplicationController
       rescue
         flash.now[:alert] = @result["message"]
       end
+      render :search
     end
   end
 
@@ -58,7 +60,8 @@ class AreasController < ApplicationController
       redirect_to root_path
     else
       flash[:alert] = "Validation failed: #{@area.errors.full_messages.join}"
-      redirect_to "/areas/search?zipcode=#{params[:area][:zipcode]}"
+      session[:zipcode] =  params[:area][:zipcode]
+      redirect_to areas_search_path
     end
   end
 
