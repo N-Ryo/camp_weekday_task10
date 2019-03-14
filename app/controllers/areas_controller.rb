@@ -8,11 +8,10 @@ class AreasController < ApplicationController
   end
 
   def search
-    # Introductionのバリデーションがかかった時のsessionの値かPOSTで受け取った値を@zipcodeに代入します。
-    zipcode = session[:zipcode] || params[:zipcode]
-    # バリデーションにかかってから、リロードや他のページに遷移してから戻ってきた時にsessionに値が記憶されていると
-    # 初めから値が入っていることになるので、sessionの中身を空にします。
-    session[:zipcode] = nil
+  end
+
+  def form
+    zipcode = params[:zipcode]
     # getリクエストで遷移してきたときは処理させない条件分岐
     if zipcode
       @area = Area.new
@@ -32,17 +31,18 @@ class AreasController < ApplicationController
           if @result["results"].nil? && @result["status"] == 200
             #ビューの出し分けの都合上空になっててほしい
             @result = nil
-            return flash.now[:alert] = "郵便番号が見つかりませんでした。"
+            flash.now[:alert] = "郵便番号が見つかりませんでした。"
+            return render :search
           end
           # 表示用の変数に結果を格納
-          @zipcode = @result["results"][0]["zipcode"]
-          @prefcode = @result["results"][0]["prefcode"]
-          @address1 = @result["results"][0]["address1"]
-          @address2 = @result["results"][0]["address2"]
-          @address3 = @result["results"][0]["address3"]
-          @kana1 = @result["results"][0]["kana1"]
-          @kana2 = @result["results"][0]["kana2"]
-          @kana3 = @result["results"][0]["kana3"]
+          @area.zipcode = @result["results"][0]["zipcode"]
+          @area.prefcode = @result["results"][0]["prefcode"]
+          @area.address1 = @result["results"][0]["address1"]
+          @area.address2 = @result["results"][0]["address2"]
+          @area.address3 = @result["results"][0]["address3"]
+          @area.kana1 = @result["results"][0]["kana1"]
+          @area.kana2 = @result["results"][0]["kana2"]
+          @area.kana3 = @result["results"][0]["kana3"]
         # 別のURLに飛ばされた場合
         when Net::HTTPRedirection
           @message = "Redirection: code=#{response.code} message=#{response.message}"
@@ -53,12 +53,16 @@ class AreasController < ApplicationController
       # エラー時処理
       rescue IOError
         flash.now[:alert] = @result["message"]
+        render :search
       rescue TimeoutError
         flash.now[:alert] = @result["message"]
+        render :search
       rescue JSON::ParserError
         flash.now[:alert] = @result["message"]
+        render :search
       rescue
         flash.now[:alert] = @result["message"]
+        render :search
       end
     end
   end
@@ -70,10 +74,8 @@ class AreasController < ApplicationController
       flash[:notice] = '地域を登録しました。'
       redirect_to root_path
     else
-      flash[:alert] = "Validation failed: #{@area.errors.full_messages.join}"
-      # Introductionのバリデーションがかかった時、値が記憶されないので、sessionを使って値を記憶させる。
-      session[:zipcode] =  params[:area][:zipcode]
-      redirect_to areas_search_path
+      flash.now[:alert] = "Validation failed: #{@area.errors.full_messages.join}"
+      render :form
     end
   end
 
