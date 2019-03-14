@@ -13,6 +13,7 @@
 //= require rails-ujs
 //= require activestorage
 //= require turbolinks
+// 以下3つをrequireしてjs依存のbootstrapを動作するようにする
 //= require jquery3
 //= require popper
 //= require bootstrap-sprockets

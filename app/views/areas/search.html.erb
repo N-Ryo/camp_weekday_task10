@@ -1,7 +1,10 @@
 <div class="col-md-6 offset-md-3">
+  <%# apiを呼び出していて、エラーがない場合はエリア登録フォームを表示する%>
   <% if @result != nil && @result["status"] == 200 %>
     <div class = "form-group">
       <h1 class = "text-center">エリア登録</h1>
+      <%# AreaモデルへのPOSTリクエストを送るフォーム %>
+      <%# readonlyオプションでIntroduction以外は編集できないようにする。%>
       <%= form_with url: '/areas', model: @area, local: true do |form| %>
         <%= form.label :zipcode, 'Zipcode' %>
         <%= form.text_field :zipcode, value: @zipcode, readonly: true, class: 'form-control mb-3' %>
@@ -9,14 +12,14 @@
         <%= form.text_field :prefcode, value: @prefcode, readonly: true, class: 'form-control mb-3' %>
         <%= form.label :address1, 'Address1' %>
         <%= form.text_field :address1, value: @address1, readonly: true, class: 'form-control mb-3' %>
-        <%= form.label :address2, 'Address2' %>
-        <%= form.text_field :address2, value: @address2, readonly: true, class: 'form-control mb-3' %>
-        <%= form.label :address3, 'Address3' %>
-        <%= form.text_field :address3, value: @address3, readonly: true, class: 'form-control mb-3' %>
         <%= form.label :kana1, 'Kana1' %>
         <%= form.text_field :kana1, value: @kana1, readonly: true, class: 'form-control mb-3' %>
+        <%= form.label :address2, 'Address2' %>
+        <%= form.text_field :address2, value: @address2, readonly: true, class: 'form-control mb-3' %>
         <%= form.label :kana2, 'Kana2' %>
         <%= form.text_field :kana2, value: @kana2, readonly: true, class: 'form-control mb-3' %>
+        <%= form.label :address3, 'Address3' %>
+        <%= form.text_field :address3, value: @address3, readonly: true, class: 'form-control mb-3' %>
         <%= form.label :kana3, 'Kana3' %>
         <%= form.text_field :kana3, value: @kana3, readonly: true, class: 'form-control mb-3' %>
         <%= form.label :introduction, 'Introduction' %>
@@ -24,10 +27,12 @@
         <%= form.submit '登録する', class: "btn btn-primary form-control mt-2"%>
       <% end %>
     </div>
+  <%# apiを呼び出していない、またはエラーがあった場合はエリア検索フォームを表示する%>
   <% else %>
     <div class = "form-group">
       <h1 class = "text-center">エリア検索</h1>
-      <%= form_with url: '/areas/search', method: :post, local: true, skip_enforcing_utf8: true do |form| %>
+      <%# /areas/searchにpostメソッドリクエストを送り、任意の値で郵便番号apiを呼び出すためのフォーム %>
+      <%= form_with url: '/areas/search', method: :post, local: true do |form| %>
         <%= form.label '郵便番号で検索' %>
         <%= form.text_field :zipcode, class: 'form-control' %>
         <%= form.submit '検索', name: nil, class: "btn btn-primary form-control mt-2"%>
