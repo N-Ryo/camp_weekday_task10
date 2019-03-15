@@ -14,13 +14,9 @@ class AreasController < ApplicationController
   end
 
   def form
-    zipcode = params[:zipcode]
-    # getリクエストで遷移してきたときは処理させない条件分岐
-    if zipcode
-      @area = Area.new
-      # areas_helper.rbにメソッドを記述
-      api_request(zipcode)
-    end
+    @area = Area.new
+    # areas_helper.rbにメソッドを記述
+    api_request(params[:zipcode])
   end
 
   def create

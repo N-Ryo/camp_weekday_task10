@@ -15,7 +15,6 @@ module AreasHelper
         @result = JSON.parse(response.body)
         # 郵便番号が見つからなかったときは空のresponse.bodyが空になるが、statusは200となるためバリデーションを組む。
         if @result["results"].nil? && @result["status"] == 200
-          #ビューの出し分けの都合上空になっててほしい
           flash.now[:alert] = "郵便番号が見つかりませんでした。"
           return render :search
         end
@@ -36,15 +35,6 @@ module AreasHelper
         @message = "HTTP ERROR: code=#{response.code} message=#{response.message}"
       end
     # エラー時処理
-    rescue IOError
-      flash.now[:alert] = @result["message"]
-      render :search
-    rescue TimeoutError
-      flash.now[:alert] = @result["message"]
-      render :search
-    rescue JSON::ParserError
-      flash.now[:alert] = @result["message"]
-      render :search
     rescue
       flash.now[:alert] = @result["message"]
       render :search
