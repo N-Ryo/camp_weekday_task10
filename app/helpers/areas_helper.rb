@@ -1,10 +1,15 @@
 module AreasHelper
 
   def api_request(zipcode)
-    # URIを解析し、hostやportをバラバラに取得できるようにする
-    uri = URI.parse("http://zipcloud.ibsnet.co.jp/api/search?zipcode=#{zipcode}")
-    # 新しくHTTPセッションを開始し、結果をresponseへ格納
-    response = Net::HTTP.get_response(uri)
+    begin 
+      # URIを解析し、hostやportをバラバラに取得できるようにする
+      uri = URI.parse("http://zipcloud.ibsnet.co.jp/api/search?zipcode=#{zipcode}")
+      # 新しくHTTPセッションを開始し、結果をresponseへ格納
+      response = Net::HTTP.get_response(uri)
+    rescue
+      flash.now[:alert] = "郵便番号を入力してください"
+      return render :search
+    end
     # 例外処理の開始
     begin
       # responseの値に応じて処理を分ける
