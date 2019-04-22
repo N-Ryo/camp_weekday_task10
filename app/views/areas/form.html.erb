@@ -1,0 +1,28 @@
+<div class="col-md-6 offset-md-3">
+  <div class = "form-group">
+    <h1 class = "text-center">エリア登録</h1>
+    <%# AreaモデルへのPOSTリクエストを送るフォーム %>
+    <%# readonlyオプションでIntroduction以外は編集できないようにする。%>
+    <%= form_with url: '/areas', model: @area, local: true do |form| %>
+      <%= form.label :zipcode, 'Zipcode' %>
+      <%= form.text_field :zipcode, value: @area.zipcode, readonly: true, class: 'form-control mb-3' %>
+      <%= form.label :prefcode, 'Prefcode' %>
+      <%= form.text_field :prefcode, value: @area.prefcode, readonly: true, class: 'form-control mb-3' %>
+      <%= form.label :address1, 'Address1' %>
+      <%= form.text_field :address1, value: @area.address1, readonly: true, class: 'form-control mb-3' %>
+      <%= form.label :kana1, 'Kana1' %>
+      <%= form.text_field :kana1, value: @area.kana1, readonly: true, class: 'form-control mb-3' %>
+      <%= form.label :address2, 'Address2' %>
+      <%= form.text_field :address2, value: @area.address2, readonly: true, class: 'form-control mb-3' %>
+      <%= form.label :kana2, 'Kana2' %>
+      <%= form.text_field :kana2, value: @area.kana2, readonly: true, class: 'form-control mb-3' %>
+      <%= form.label :address3, 'Address3' %>
+      <%= form.text_field :address3, value: @area.address3, readonly: true, class: 'form-control mb-3' %>
+      <%= form.label :kana3, 'Kana3' %>
+      <%= form.text_field :kana3, value: @area.kana3, readonly: true, class: 'form-control mb-3' %>
+      <%= form.label :introduction, 'Introduction' %>
+      <%= form.text_area :introduction, value: @area.introduction, class: 'form-control mb-3' %>
+      <%= form.submit '登録する', class: "btn btn-primary form-control mt-2"%>
+    <% end %>
+  </div>
+</div>

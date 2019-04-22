@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CampWeekdayTask10</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <%# 課題にある通りにナビゲーションとflashを定義する。 %>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+      <%# indexアクションへ飛ばす %>
+      <%= link_to 'Areas', root_path, class: 'navbar-brand' %>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+              <%# searchアクションへ飛ばす。%>
+              <%= link_to 'AreaSearch', '/areas/search', class: "nav-link" %>
+            </li>
+        </ul>
+    </nav>
+    <div class="container mt-5">
+      <div class="row">
+        <% if flash.notice %>
+          <div class="col-md-12">
+            <div class="alert alert-success" role="alert">
+              <%= flash.notice %>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+        <% end %>
+        <% if flash.alert %>
+          <div class="col-md-6 offset-md-3 mt-3">
+            <div class="alert alert-danger" role="alert">
+              <%= flash.alert %>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="row">
+        <%= yield %>
+      </div>
+    </div>
+  </body>
+</html>

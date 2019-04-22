@@ -1,0 +1,11 @@
+<div class="col-md-6 offset-md-3">
+  <div class = "form-group">
+    <h1 class = "text-center">エリア検索</h1>
+    <%# /areas/searchにpostメソッドリクエストを送り、任意の値で郵便番号apiを呼び出すためのフォーム %>
+    <%= form_with url: '/areas/search', method: :post, local: true do |form| %>
+      <%= form.label '郵便番号で検索' %>
+      <%= form.text_field :zipcode, class: 'form-control' %>
+      <%= form.submit '検索', name: nil, class: "btn btn-primary form-control mt-2"%>
+    <% end %>
+  </div>
+</div>

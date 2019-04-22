@@ -1,0 +1,30 @@
+<div class="col-md-12">
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Zipcode</th>
+        <th>PrefCode</th>
+        <th>Address</th>
+        <th>Kana</th>
+        <th>Introduction</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @areas.each do |area| %>
+        <tr>
+          <td><%= area.id %></td>
+          <td><%= area.zipcode %></td>
+          <td><%= area.prefcode %></td>
+          <%# Addressを一つにまとめる %>
+          <td><%= "#{area.address1}#{area.address2}#{area.address3}" %></td>
+          <%# Kanaを一つにまとめる %>
+          <td><%= "#{area.kana1}#{area.kana2}#{area.kana3}" %></td>
+          <td><%= area.introduction %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= link_to '検索する', '/areas/search', class: "btn btn-primary form-control" %>
+</div>
